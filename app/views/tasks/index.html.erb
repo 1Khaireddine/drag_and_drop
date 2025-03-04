@@ -1,10 +1,33 @@
-<div id="external-tasks">
-  <p data-event='{"title":"Task 1", "days_of_week":[1,4], "start_date":"2025-03-01", "end_date":"2025-04-01", "start_at":"08:30", "finish_at":"11:30"}' class="fc-event">
-    Task 1
-  </p>
-  <p data-event='{"title":"Task 2", "days_of_week":[2,5], "start_date":"2025-03-05", "end_date":"2025-04-15", "start_at":"09:00", "finish_at":"12:00"}' class="fc-event">
-    Task 2
-  </p>
+
+<div class="container" data-controller="calendar">
+  <div class="row">
+    <div class="col-12">
+      <div class="p-3">
+        <h1>Tasks List</h1>
+      </div>
+    </div>
+    <div class="col-4 py-5">
+
+      <div class="agents-list mb-3">
+        <%= select_tag "agent_id", options_for_select(@agents.map { |a| [a.name, a.id] }), class: "form-select", data: { action:"change->calendar#setDefaultAgent"} %>
+      </div>
+
+      <hr>
+
+      <div id="external-tasks">
+
+        <% @unassigned_tasks.each do |task| %>
+          <div id="task-<%= task.id %>"  data-event='{"title":"<%= task.title %>", "days_of_week":"<%= task.days%>", "start_date":"<%= task.start_on%>", "end_date":"<%= task.finish_on%>", "start_at":"<%= task.start_at.strftime("%H:%M")%>", "finish_at":"<%= task.finish_at.strftime("%H:%M")%>"}' class="fc-event">
+            <div><%= task.title %></div>
+            <%= task.start_on %> - <%= task.finish_on %>
+          </div>
+        <% end %>
+
+      </div>
+    </div>
+    <div class="col-8">
+      <div data-calendar-target="calendar"></div>
+    </div>
+  </div>
 </div>
 
-<div data-controller="calendar" data-calendar-target="calendar"></div>

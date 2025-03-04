@@ -2,10 +2,10 @@ class TasksController < ApplicationController
   def index
     @agents = Agent.all
     @unassigned_tasks = Task.where(agent_id: nil)
-    @assigned_tasks = Task.where.not(agent_id: nil) #all tasks
+    @assigned_tasks = Task.where.not(agent_id: nil)
     respond_to do |format|
       format.html
-      format.json { render json: { tasks: serialized_tasks(@assigned_tasks) } } # this will send all assigned tasks
+      format.json { render json: { tasks: serialized_tasks(@assigned_tasks) } }
     end
   end
 

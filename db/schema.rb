@@ -26,6 +26,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_02_130305) do
     t.string "description"
     t.date "start_on"
     t.date "finish_on"
+    t.time "start_at"
+    t.time "finish_at"
+    t.integer "days", default: [], array: true
     t.bigint "agent_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

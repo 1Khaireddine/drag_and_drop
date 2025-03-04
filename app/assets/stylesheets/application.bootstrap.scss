@@ -2,8 +2,9 @@
 @import 'bootstrap-icons/font/bootstrap-icons';
 
 #external-tasks {
-  width: 200px;
   padding: 10px;
+  max-height: 640px;
+  overflow-y: auto;
   background: #f8f9fa;
   border: 1px solid #ddd;
 }
@@ -11,7 +12,7 @@
 .fc-event {
   padding: 5px;
   margin: 5px 0;
-  background: #007bff;
   color: #fff;
   cursor: grab;
+  background: #00aeff;
 }
