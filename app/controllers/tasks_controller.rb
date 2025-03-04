@@ -9,12 +9,24 @@ class TasksController < ApplicationController
     end
   end
 
-  def update
-    @task = Task.find(params[:id])
-    if @task.update(task_params)
-      render json: { status: 'success', task: @task }
+  def assign
+    task = Task.find(params[:task_id])
+    agent = Agent.find(params[:agent_id])
+
+    if task.update(agent: agent)
+      render json: { success: true, task: task }, status: :ok
     else
-      render json: { status: 'error', errors: @task.errors.full_messages }, status: :unprocessable_entity
+      render json: { success: false, errors: task.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
+  def unassign
+    task = Task.find(params[:id])
+
+    if task.update(agent: nil)
+      render json: { success: true, task: task }, status: :ok
+    else
+      render json: { success: false, errors: task.errors.full_messages }, status: :unprocessable_entity
     end
   end
 

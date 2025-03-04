@@ -9,7 +9,7 @@
     <div class="col-4 py-5">
 
       <div class="agents-list mb-3">
-        <%= select_tag "agent_id", options_for_select(@agents.map { |a| [a.name, a.id] }), class: "form-select", data: { action:"change->calendar#setDefaultAgent"} %>
+        <%= select_tag "agent_id", options_for_select(@agents.map { |a| [a.name, a.id] }), class: "form-select", data: { calendar_target:"agentsList",action:"change->calendar#setDefaultAgent"} %>
       </div>
 
       <hr>
@@ -17,7 +17,7 @@
       <div id="external-tasks">
 
         <% @unassigned_tasks.each do |task| %>
-          <div id="task-<%= task.id %>"  data-event='{"title":"<%= task.title %>", "days_of_week":"<%= task.days%>", "start_date":"<%= task.start_on%>", "end_date":"<%= task.finish_on%>", "start_at":"<%= task.start_at.strftime("%H:%M")%>", "finish_at":"<%= task.finish_at.strftime("%H:%M")%>"}' class="fc-event">
+          <div id="task-<%= task.id %>" data-id="<%= task.id %>"  data-event='{"title":"<%= task.title %>", "days_of_week":"<%= task.days%>", "start_date":"<%= task.start_on%>", "end_date":"<%= task.finish_on%>", "start_at":"<%= task.start_at.strftime("%H:%M")%>", "finish_at":"<%= task.finish_at.strftime("%H:%M")%>"}' class="fc-event">
             <div><%= task.title %></div>
             <%= task.start_on %> - <%= task.finish_on %>
           </div>

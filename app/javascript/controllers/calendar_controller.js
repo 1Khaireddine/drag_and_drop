@@ -5,13 +5,15 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin, { Draggable } from "@fullcalendar/interaction";
 
 export default class extends Controller {
-  static targets = ["calendar"];
+  static targets = ["agentsList", "calendar"];
 
   static values = {
     agentId: String,
   }
 
   connect() {
+    this.agentIdValue = this.agentsListTarget.value;
+    this.fetchAgentTasks();
     this.initExternalEvents();
     this.initCalendar();
   }
@@ -78,6 +80,7 @@ export default class extends Controller {
         let eventData = JSON.parse(el.dataset.event);
         console.log("Dragging event:", eventData);
         return {
+          id: el.dataset.id,
           title: eventData.title,
           startTime: eventData.start_at,
           endTime: eventData.finish_at,
@@ -113,7 +116,29 @@ export default class extends Controller {
   }
 
   handleEventReceive(info) {
-    console.log("Event dropped into calendar:", info.event);
+    const taskID = info.draggedEl.dataset.id;
+    let taskData = {
+      task_id: taskID,
+      agent_id: this.agentIdValue,
+    };
+
+    fetch(`/tasks/${taskID}/assign`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').content, // For Rails
+      },
+      body: JSON.stringify(taskData),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Task assigned successfully:", data);
+      })
+      .catch((error) => {
+        console.error("Error assigning task:", error);
+        info.revert(); // Revert task position if request fails
+      });
+
     this.applyDefaultSchedule(info);
     this.removeExternalTask(info.draggedEl);
   }
@@ -188,6 +213,29 @@ export default class extends Controller {
     externalTasks.appendChild(taskElement);
 
     event.remove();
+
+    const taskID = info.event._def.extendedProps.id;
+
+    this.unscheduleTask(taskID)
+  }
+
+  unscheduleTask(taskID) {
+
+    fetch(`/tasks/${taskID}/unassign`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').content, // For Rails
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Task unassigned successfully:", data);
+      })
+      .catch((error) => {
+        console.error("Error assigning task:", error);
+        info.revert(); // Revert task position if request fails
+      });
   }
 
 }
